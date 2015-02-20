@@ -8,17 +8,16 @@ url = 'https://www.ginzarenoir.jp/grms/pub/pc/schedule.php'
 shop_key = 'c_type'
 date_key = 'date'
 
+vacant = []
 agent = Mechanize.new
 
 shops["shops"].each do |key, value|
+	p key
+	p value
 
 	today = Date::today
-
-	# for num in 0..0
-	for num in 0..59 do
-    if ![0, 6].include?((today + num).wday)
-      next
-    end
+	for num in 0..0
+	# for num in 0..59
 		day = (today + num).to_s
 
 		sleep(1)
@@ -28,16 +27,20 @@ shops["shops"].each do |key, value|
 		rooms.each do |room|
 			tds = room.xpath('td')
 			room_info = tds[0].inner_text
-      usable = []
-			for i in 1..tds.size-1 do
+      vacant = true
+			for i in 1..tds.size-1
 				if tds[i][:title].nil?
+          # 予約済みもしくは利用不可
+					# p tds[i][:bgcolor]
 				else
-					usable.push i
+          # 予約可能
+					p tds[i][:title]
+
+          # 暫定対応
+          # 11:00 - 19:00 が空いている部屋、日時のみ表示
 				end
 			end
-      if usable & [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22] == [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
-        p room_info + ' ' + day
-      end
+			break
 		end
 	end
 end
